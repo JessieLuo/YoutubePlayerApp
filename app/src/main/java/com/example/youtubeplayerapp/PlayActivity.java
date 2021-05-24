@@ -11,11 +11,8 @@ import android.widget.MediaController;
 import android.widget.VideoView;
 
 public class PlayActivity extends AppCompatActivity {
-    public static final String MEDIA_NAME = "demo";
+    public static final String MEDIA_NAME = "my_video";
     VideoView videoView;
-    private int mCurrentPosition = 0;
-    private int mStatePosition = 0;
-    public static final String PLAYBACK_TIME = "play time";
 
 
     private Uri getMedia(String mediaName){
@@ -25,26 +22,18 @@ public class PlayActivity extends AppCompatActivity {
     private void initializePlayer(){
         Uri videoUri = getMedia(MEDIA_NAME);
         videoView.setVideoURI(videoUri);
-        if(mCurrentPosition > 0){
-            videoView.seekTo(mCurrentPosition);
-        } else {
-            videoView.seekTo(1);
-        }
         videoView.start();
     }
 
     private void releasePlayer(){
         videoView.stopPlayback();
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
         videoView = findViewById(R.id.videoView);
-
-        if(savedInstanceState != null){
-            mCurrentPosition = savedInstanceState.getInt(PLAYBACK_TIME);
-        }
 
         MediaController mediaController = new MediaController(this);
         mediaController.setMediaPlayer(videoView);
@@ -72,15 +61,8 @@ public class PlayActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        mStatePosition = videoView.getCurrentPosition();
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.N){
             videoView.pause();
         }
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState, @NonNull PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
-        outState.putInt(PLAYBACK_TIME, mStatePosition);
     }
 }
